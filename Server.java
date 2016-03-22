@@ -5,6 +5,7 @@ public class Server {
 
     public static ServerSocket server;
     public static Socket sock;
+    public static PrintWriter out;
 
     public static void main(String[] args) {
 
@@ -31,34 +32,25 @@ public class Server {
                 String[] requestParam = request.split(" ");
                 String path = requestParam[1];
 
-                PrintWriter out = new PrintWriter(sock.getOutputStream(), true);
+                out = new PrintWriter(sock.getOutputStream(), true);
 
-                oneClient(out, path);
+                oneClient(path);
 
             } catch (Exception e) {
-                System.out.println(e.getMessage());
-            }
+                System.out.println(e.getMessage());            }
         }
     }
 
-    public static void oneClient(PrintWriter out, String path) {
+    public static void oneClient(String path) {
 
-        File file = null;
-
-        try {
-            file = new File(path);
-        } catch (Exception e) {
-
-            out.println("HTTP 404");
-            return;
-
-        }
+        File file = new File(path);
 
         FileReader fr = null;
 
         try {
             fr = new FileReader(file);
         } catch (Exception e) {
+            out.println("HTTP 404");
             return;
         }
 
