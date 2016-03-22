@@ -33,27 +33,50 @@ public class Server {
 
                 PrintWriter out = new PrintWriter(sock.getOutputStream(), true);
 
-                File file = null;
-
-                try {
-                    file = new File(path);
-                } catch (Exception e) {
-                    out.println("HTTP 404");
-                    continue;
-                }
-
-                FileReader fr = new FileReader(file);
-                BufferedReader bfr = new BufferedReader(fr);
-
-                String line = null;
-
-                while ((line = bfr.readLine()) != null) {
-                    out.println(line);
-                }
+                oneClient(out, path);
 
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
         }
+    }
+
+    public static void oneClient(PrintWriter out, String path) {
+
+        File file = null;
+
+        try {
+            file = new File(path);
+        } catch (Exception e) {
+
+            out.println("HTTP 404");
+            return;
+
+        }
+
+        FileReader fr = null;
+
+        try {
+            fr = new FileReader(file);
+        } catch (Exception e) {
+            return;
+        }
+
+        BufferedReader bfr = new BufferedReader(fr);
+
+        String line = "";
+
+        while (true) {
+            try {
+                line = bfr.readLine();
+                if (line == null) {
+                    return;
+                }
+            } catch (Exception e) {
+                return;
+            }
+            out.println(line);
+        }
+
     }
 }
