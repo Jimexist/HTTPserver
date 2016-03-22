@@ -4,6 +4,7 @@ import java.net.*;
 public class Server {
 
     public static ServerSocket server;
+    public static Socket sock;
 
     public static void main(String[] args) {
 
@@ -14,10 +15,14 @@ public class Server {
             System.out.println(e.getMessage());
         }
 
+        try {
+            sock = server.accept();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
         while (true) {
             try {
-                Socket sock = serverSock.accept();
-
                 InputStream sis = sock.getInputStream();
                 BufferedReader br = new BufferedReader(
                     new InputStreamReader(sis));
@@ -27,23 +32,24 @@ public class Server {
                 String path = requestParam[1];
 
                 PrintWriter out = new PrintWriter(sock.getOutputStream(), true);
-                File file = new File(path);
 
-                if (!file.exists()) {
-                     out.write("HTTP 404");
+                File file = null;
+
+                try {
+                    file = new File(path);
+                } catch (Exception e) {
+                    out.println("HTTP 404");
+                    continue;
                 }
 
                 FileReader fr = new FileReader(file);
                 BufferedReader bfr = new BufferedReader(fr);
-                String line;
+
+                String line = null;
 
                 while ((line = bfr.readLine()) != null) {
-                    out.write(line);
+                    out.println(line);
                 }
-
-                bfr.close();
-                br.close();
-                out.close();
 
             } catch (Exception e) {
                 System.out.println(e.getMessage());
