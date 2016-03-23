@@ -142,6 +142,8 @@ public class Server {
      * @param path Real path of a file
      */
     public static void javascript(String path) {
-
+        out.println("<script type='text/javascript'>");
+        plainText(path);
+        out.println("</script>");
     }
 }
