@@ -77,8 +77,9 @@ public class Server {
         } else if (format.equals("png") || format.equals("png")) {
             image(path);
         } else if (format.equals("html")) {
-            System.out.println(path);
             html(path);
+        } else if (format.equals("js")) {
+            javascript(path);
         }
     }
 
@@ -117,12 +118,16 @@ public class Server {
         }
     }
 
+    /**
+     * Send back Image data.
+     * @param path Real path of a file
+     */
     public static void image(String path) {
 
     }
 
     /**
-     * Send back HTML header data
+     * Send back HTML header data.
      * @param path Real path of a file
      */
     public static void html(String path) {
@@ -130,5 +135,13 @@ public class Server {
         out.println("Content-Type: text/html");
         out.println("\n");
         plainText(path);
+    }
+
+    /**
+     * Send back JavaScript data.
+     * @param path Real path of a file
+     */
+    public static void javascript(String path) {
+
     }
 }
