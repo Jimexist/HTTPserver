@@ -3,7 +3,7 @@ import java.io.IOException;
 import java.net.Socket;
 
 /**
- * Server class gets HTTP request and sends back data.
+ * Server class binds the server address and accepts client.
  * @author Jiashen Cao
  */
 public class Server{
@@ -28,7 +28,7 @@ public class Server{
         while (true) {
             try {
                 Socket sock = server.accept();
-                new MultithreadingServer(sock);
+                new Thread(new MultithreadingServer(sock)).start();
             } catch (IOException e) {
                 System.out.println(e.getMessage());
             }

@@ -1,20 +1,29 @@
 import java.io.*;
 import java.net.*;
 
+/**
+ * Multithreading Server class process requests by using different threads.
+ * @author Jiashen Cao
+ */
 public class MultithreadingServer implements Runnable {
 
     private Socket sock;
     private PrintWriter out;
     private boolean running;
 
+    /**
+     * Initial a socket with a thread and start that thread.
+     * @param  socket The socket client.
+     */
     public MultithreadingServer(Socket socket) {
         this.sock = socket;
         this.running = true;
-        Thread t = new Thread(this);
-        t.start();
     }
 
-    public void processRequest() throws Exception {
+    /**
+     * Process HTTP request.
+     */
+    public void processRequest() {
         try {
             InputStream sis = this.sock.getInputStream();
             BufferedReader br = new BufferedReader(
@@ -34,7 +43,11 @@ public class MultithreadingServer implements Runnable {
         }
     }
 
-    public void redirect(String path) throws Exception {
+    /**
+     * Redirect each request to different response.
+     * @param path The real path of a file in computer.
+     */
+    public void redirect(String path) {
         String[] pathString = path.split("/");
         String endpath = pathString[pathString.length - 1];
 
@@ -64,7 +77,11 @@ public class MultithreadingServer implements Runnable {
         }
     }
 
-    public void plainText(String path) throws Exception {
+    /**
+     * Send back plain text data.
+     * @param path Real path of a file in computer.
+     */
+    public void plainText(String path) {
         File file = new File(path);
 
         FileReader fr = null;
@@ -98,13 +115,21 @@ public class MultithreadingServer implements Runnable {
         this.running = false;
     }
 
-    public void imageJPEG(String path) throws Exception {
+    /**
+     * Send back jpeg image header.
+     * @param path Real path of a file in computer.
+     */
+    public void imageJPEG(String path) {
         this.out.println("HTTP/1.1 200 OK");
         this.out.println("Content-Type: image/jpeg");
         plainText(path);
     }
 
-    public void imagePNG(String path) throws Exception {
+    /**
+     * Send back png image header.
+     * @param path Real path of a file in computer.
+     */
+    public void imagePNG(String path) {
         this.out.println("HTTP/1.1 200 OK");
         this.out.println("Content-Type: image/png");
         plainText(path);
@@ -114,7 +139,7 @@ public class MultithreadingServer implements Runnable {
      * Send back HTML header data.
      * @param path Real path of a file
      */
-    public void html(String path) throws Exception {
+    public void html(String path) {
         this.out.println("HTTP/1.1 200 OK");
         this.out.println("Content-Type: text/html");
         this.out.println("\n");
@@ -125,25 +150,33 @@ public class MultithreadingServer implements Runnable {
      * Send back JavaScript data.
      * @param path Real path of a file
      */
-    public void javascript(String path) throws Exception {
+    public void javascript(String path) {
         this.out.println("HTTP/1.1 304 OK");
         this.out.println("Content-Type: text/javascript");
         plainText(path);
     }
 
-    public void css(String path) throws Exception {
+    /**
+     * Send back CSS data header.
+     * @param path Real path of a file in computer.
+     */
+    public void css(String path) {
         this.out.println("HTTP/1.1 304 OK");
         this.out.println("Content-Type: text/css");
         plainText(path);
     }
 
+    /**
+     * Get request every 100 miliseconds.
+     */
     @Override
     public void run() {
         try {
-            while (true) {
+            while (this.running) {
                 processRequest();
                 Thread.sleep(100);
             }
+            this.sock.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
