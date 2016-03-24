@@ -49,7 +49,11 @@ public class MultithreadingServer implements Runnable {
      */
     public void redirect(String path) {
         String[] pathString = path.split("/");
-        String endpath = pathString[pathString.length - 1];
+
+        String endpath = path;
+        if (pathString.length > 0) {
+            endpath = pathString[pathString.length - 1];
+        }
 
         String[] seppath = endpath.split("[.]");
 
